@@ -2,6 +2,8 @@ package tests;
 
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
@@ -10,21 +12,38 @@ public class ProductsTest extends BaseTest {
 
     @Test
     public void checkGoodsAdded() {
+        List<String> goodsList = List.of(
+                "Sauce Labs Onesie",
+                "Sauce Labs Backpack",
+                "Sauce Labs Bike Light");
+
+        System.out.println("ProductsTest.checkGoodsAdded is running in Thread:"
+                + Thread.currentThread().getId());
         loginPage.open();
         loginPage.login("standard_user", "secret_sauce");
-        productsPage.addGoodsToCart("Sauce Labs Onesie");
-        productsPage.addGoodsToCart(0);
 
-        assertEquals(productsPage.getTitle(), "Products", "Заголовок страницы не соответствует");
-        assertTrue(productsPage.getBucketDisplayed(), "Иконка корзины не отображается");
+        for (String good : goodsList) {
+            productsPage.addGoodsToCart(good);
+        }
+
+        assertEquals(productsPage.getTitle(), "Products",
+                "Заголовок страницы не соответствует");
+        assertTrue(productsPage.getBucketDisplayed(),
+                "Иконка корзины не отображается");
         assertEquals(productsPage.checkCounterCssValue(), "rgba(226, 35, 26, 1)",
                 "цвет заднего фона не соответствует макету");
-        assertEquals(productsPage.getCountItemsBucket(), "2",
+        assertEquals(productsPage.getCountItemsBucket(), String.valueOf(goodsList.size()),
                 "Неверное количество товаров в корзине");
+
+        productsPage.switchToBasket();
+        assertTrue(basketPage.getProductsName().containsAll(goodsList),
+                "В корзине оказались не все добавленные товары");
     }
 
     @Test
     public void checkCartCounterSwitcher() {
+        System.out.println("ProductsTest.checkCartCounterSwitcher is running in Thread:"
+                + Thread.currentThread().getId());
         loginPage.open();
         loginPage.login("standard_user", "secret_sauce");
 

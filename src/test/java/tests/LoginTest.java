@@ -3,13 +3,17 @@ package tests;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 public class LoginTest extends BaseTest {
 
     @Test
-    public void checkLogin() {
+    public void checkLogin(){
+        System.out.println("LoginTest.checkLogin is running in Thread:"
+                + Thread.currentThread().getId());
         loginPage.open();
         loginPage.login("standard_user", "secret_sauce");
 
@@ -28,6 +32,8 @@ public class LoginTest extends BaseTest {
 
     @Test(dataProvider = "incorrectLoginData")
     public void checkIncorrectLogin(String user, String password, String errorMessage) {
+        System.out.println("LoginTest.checkIncorrectLogin is running in Thread:"
+                + Thread.currentThread().getId());
         loginPage.open();
         loginPage.login(user, password);
 
